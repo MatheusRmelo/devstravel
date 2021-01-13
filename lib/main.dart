@@ -6,6 +6,8 @@ import 'src/pages/home.dart';
 import 'src/pages/preload.dart';
 import 'src/pages/search.dart';
 import 'src/pages/continent.dart';
+import 'src/pages/listcity.dart';
+import 'src/pages/city.dart';
 
 void main() => runApp(MultiProvider(
       providers: [ChangeNotifierProvider(create: (context) => AppData())],
@@ -22,6 +24,8 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/search': (context) => SearchPage(),
         '/continent': (context) => ContinentPage(),
+        '/listcity': (context) => ListCityPage(),
+        '/city': (context) => CityPage(),
       },
     );
   }
