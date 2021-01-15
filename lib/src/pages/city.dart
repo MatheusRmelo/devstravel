@@ -4,7 +4,14 @@ import '../models/appdata.dart';
 
 import '../partials/customdrawer.dart';
 
-class CityPage extends StatelessWidget {
+class CityPage extends StatefulWidget {
+  @override
+  _CityPage createState() => _CityPage();
+}
+
+class _CityPage extends State<CityPage> {
+  bool heart = false;
+
   GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey();
 
   TextStyle styles = TextStyle(
@@ -32,8 +39,10 @@ class CityPage extends StatelessWidget {
         stars.add(false);
       }
     }
-    return Consumer<AppData>(
-      builder: (ctx, appdata, child) => Scaffold(
+
+    return Consumer<AppData>(builder: (ctx, appdata, child) {
+      heart = appdata.hasFavorite(cityData['name']);
+      return Scaffold(
         key: _scaffoldkey,
         drawer: CustomDrawer(pageContext: context),
         backgroundColor: Colors.white,
@@ -123,10 +132,14 @@ class CityPage extends StatelessWidget {
                             margin: EdgeInsets.all(16),
                             child: IconButton(
                               icon: Icon(
-                                Icons.favorite_border,
+                                heart ? Icons.favorite : Icons.favorite_border,
                                 color: Colors.red,
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                setState(() {
+                                  heart = appdata.favorite(cityData['name']);
+                                });
+                              },
                             ),
                           )
                         ],
@@ -147,7 +160,7 @@ class CityPage extends StatelessWidget {
                         thickness: 1,
                       ),
                       Container(
-                        margin: EdgeInsets.all(10),
+                        margin: EdgeInsets.only(top: 10, bottom: 16),
                         child: Text(
                           'PRINCIPAIS PONTOS TURÍSTICOS',
                           style: TextStyle(
@@ -161,13 +174,48 @@ class CityPage extends StatelessWidget {
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         crossAxisCount: 2,
+                        childAspectRatio: 10 / 11,
                         children: List.generate(
-                            cityData['places'].length * 5,
+                            cityData['places'].length,
                             (index) => Container(
-                                  height: 100,
-                                  width: 100,
-                                  margin: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(color: Colors.red),
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: AspectRatio(
+                                          aspectRatio: 1 / 1,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            child: Image.network(
+                                              cityData['places'][index]['img'],
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(top: 8),
+                                        child: Text(
+                                          cityData['places'][index]['name'],
+                                          style: TextStyle(
+                                              fontFamily: 'Helvetica Neue',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(bottom: 16),
+                                        child: Text(
+                                          'Ponto turístico',
+                                          style: TextStyle(
+                                              fontFamily: 'Helvetica Neue',
+                                              fontSize: 12,
+                                              color: Colors.grey),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 )),
                       )
                     ],
@@ -188,7 +236,7 @@ class CityPage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
+    });
   }
 }
